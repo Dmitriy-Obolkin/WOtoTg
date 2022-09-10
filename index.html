@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name ="viewport" content="width=device-width, initial-scale=1.0">
+	<title>TG Message</title>
+	
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	
+</head>
+<body>
+
+	<div class="container mt-5 pt-5 pb-5">
+		<div class="col-md-6 offset-md-3">
+			<form id="tg">
+			
+				<div class="input-group">
+				  <span class="input-group-text">Действие:</span> 
+				  <textarea class="form-control" name="action" aria-label="Действие:"></textarea>
+				</div>
+
+				<div class="input-group">
+				  <span class="input-group-text">Текст/MessangeID:</span>
+				  <textarea class="form-control" name="textBox" aria-label="Текст:"></textarea>
+				</div>
+				
+				<div class="input-group">
+				  <span class="input-group-text">ChatId:</span>
+				  <textarea class="form-control" name="ChatId" aria-label="ChatId:"></textarea>
+				</div>
+
+				
+				<button type="button" id="send" class="btn btn-primary mt-4">Выполнить</button>
+
+
+				<div class="input-group">
+				  <span class="input-group-text">Отправить:</span>
+				  <textarea class="form-control" name="content" aria-label="Отправить:"></textarea>
+				</div>
+				
+				<div class="input-group">
+				  <span class="input-group-text">Кому:</span>
+				  <textarea class="form-control" name="for" aria-label="Кому:"></textarea>
+				</div>
+
+				
+				<button type="submit" id="sendM" class="btn btn-primary mt-5">Отправить</button>
+				
+			</form>
+		</div>
+	</div>
+	
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script> 
+		const TOKEN = "5294129831:AAGznzb0AIZOkntU2EPOCA6xye8eisWBaAA";
+		let URI_API = `https://api.telegram.org/bot${ TOKEN }/`;
+		let CHAT_ID = "";
+		
+		function sleep(milliseconds) {
+						  const date = Date.now();
+						  let currentDate = null;
+						  do {
+						    currentDate = Date.now();
+						  } while (currentDate - date < milliseconds);
+						}
+
+
+		document.getElementById('send').addEventListener('click', function(e) {
+			e.preventDefault();
+
+			let rec = `${document.getElementById('tg').ChatId.value}`;
+				switch(rec) 
+				{
+					//Новые заявки
+					case '0':  
+						CHAT_ID = "-1001610981137";
+					break;
+
+					//Заявки в работе
+					case '1':  
+						CHAT_ID = "-1001770294029";
+					break;
+
+					//Простои РЦ
+					case '2':  
+						CHAT_ID = "-1001511086279";
+					break;
+				}
+
+				let action = `${document.getElementById('tg').action.value}`;
+				switch(action) 
+				{
+					//Удалить
+					case '0':
+						URI_APIR = URI_API +"deleteMessage";
+						let messageId = `${document.getElementById('tg').textBox.value}`;
+
+						axios.post(URI_APIR, {
+							chat_id: CHAT_ID,
+							message_id: messageId
+						})
+						.then((res) => {
+							console.log('Успешное удаление');
+						})
+						.catch((err) => {
+							console.log('Ошибка удаления');
+							console.warn(err);
+						})
+						.finally(() => {
+							console.log('Конец');
+						});
+
+						
+					break;
+
+					//Отправить
+					case '1':
+						URI_APIR = URI_API + "sendMessage";
+
+						let message = `${document.getElementById('tg').textBox.value}`;
+						axios.post(URI_APIR, {
+							chat_id: CHAT_ID,
+							parse_mode: 'html',
+							text: message
+						})
+						.then(function(response){
+							let data = JSON.parse( response.request.response );
+							var result1 = [];
+							for(var k in data) {
+							  var v = data[k];
+							  result1.push(k, v);
+							}
+							var tmp = result1[3];
+							var result2 = [];
+							for(var k2 in tmp) {
+							  var v2 = tmp[k2];
+							  result2.push(k2, v2);
+							}
+							console.log("ИД сообщения: "+result2[1]);
+							document.getElementById('tg').action.value = "2";
+							document.getElementById('tg').textBox.value = result2[1];
+						}).catch((err) => {
+							console.warn(err);
+							document.getElementById('tg').action.value = "3";
+						})
+						.finally(() => {
+							console.log('Конец');
+							document.getElementById('tg').ChatId.value = CHAT_ID;
+						});
+					break;
+				}
+		})
+		
+
+
+
+		document.getElementById('sendM').addEventListener('submit', function(e) {
+			e.preventDefault();
+			
+				let URI_API2 = URI_API + "sendMessage";
+				let rec = `${document.getElementById('tg').for.value}`;
+				console.log(`rec: ${rec}`);
+				switch(rec) 
+				{
+					case '0':  
+						CHAT_ID = "-668668952";
+					break;
+					case '1':  
+						CHAT_ID = "-650535013";
+					break;
+
+					case '2':  
+						CHAT_ID = "-627569679";
+					break;
+					case '3':  
+						CHAT_ID = "-744375257";
+					break;
+
+					case '4':  
+						CHAT_ID = "-733938349";
+					break;
+					
+					case '5':  
+						CHAT_ID = "-658498422";
+						sleep(3500);
+					break;
+						
+					case '6':  
+						CHAT_ID = "-719557811";
+					break;
+				}
+
+				let message = `${document.getElementById('tg').content.value}`;
+				
+				
+				axios.post(URI_API2, {
+					chat_id: CHAT_ID,
+					parse_mode: 'html',
+					text: message
+				})
+				.then((res) => {
+					console.log('Успех');
+				})
+				.catch((err) => {
+					console.warn(err);
+				})
+				.finally(() => {
+					console.log('Конец');
+					document.getElementById('tg').content.value = "";
+					document.getElementById('tg').for.value = "";
+				});		
+		})
+
+
+
+
+		
+				
+			
+	</script>
+
+</body>
+</html>
