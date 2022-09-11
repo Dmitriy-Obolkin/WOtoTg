@@ -45,7 +45,7 @@
 				</div>
 
 				
-				<button type="submit" id="sendM" class="btn btn-primary mt-5">Отправить</button>
+				<button type="button" id="sendM" class="btn btn-primary mt-5">Отправить</button>
 				
 			</form>
 		</div>
@@ -155,7 +155,7 @@
 
 
 
-		document.getElementById('sendM').addEventListener('submit', function(e) {
+		document.getElementById('sendM').addEventListener('click', function(e) {
 			e.preventDefault();
 			
 				let URI_API2 = URI_API + "sendMessage";
