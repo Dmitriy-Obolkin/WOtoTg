@@ -21,8 +21,13 @@
 				</div>
 
 				<div class="input-group">
-				  <span class="input-group-text">Текст/MessangeID:</span>
-				  <textarea class="form-control" name="textBox" aria-label="Текст:"></textarea>
+				  <span class="input-group-text">Text:</span>
+				  <textarea class="form-control" name="textBox" aria-label="Text:"></textarea>
+				</div>
+
+				<div class="input-group">
+				  <span class="input-group-text">MessageID:</span>
+				  <textarea class="form-control" name="messageID" aria-label="MessageID:"></textarea>
 				</div>
 				
 				<div class="input-group">
@@ -89,16 +94,18 @@
 				}
 
 				let action = `${document.getElementById('tg').action.value}`;
+				let messageId2;
+				let message;
 				switch(action) 
 				{
 					//Удалить
 					case '0':
 						URI_APIR = URI_API +"deleteMessage";
-						let messageId = `${document.getElementById('tg').textBox.value}`;
+						messageId2 = `${document.getElementById('tg').messageID.value}`;
 
 						axios.post(URI_APIR, {
 							chat_id: CHAT_ID,
-							message_id: messageId
+							message_id: messageId2
 						})
 						.then((res) => {
 							console.log('Успешное удаление');
@@ -118,7 +125,7 @@
 					case '1':
 						URI_APIR = URI_API + "sendMessage";
 
-						let message = `${document.getElementById('tg').textBox.value}`;
+						message = `${document.getElementById('tg').textBox.value}`;
 						axios.post(URI_APIR, {
 							chat_id: CHAT_ID,
 							parse_mode: 'html',
@@ -139,7 +146,7 @@
 							}
 							console.log("ИД сообщения: "+result2[1]);
 							document.getElementById('tg').action.value = "2";
-							document.getElementById('tg').textBox.value = result2[1];
+							document.getElementById('tg').messageId.value = result2[1];
 						}).catch((err) => {
 							console.warn(err);
 							document.getElementById('tg').action.value = "3";
@@ -148,6 +155,48 @@
 							console.log('Конец');
 							document.getElementById('tg').ChatId.value = CHAT_ID;
 						});
+					break;
+
+
+					//Редактировать
+					case '2':
+
+						URI_APIR = URI_API + "editMessageText";
+						messageId2 = `${document.getElementById('tg').messageID.value}`;
+
+						message = `${document.getElementById('tg').textBox.value}`;
+						axios.post(URI_APIR, {
+							chat_id: CHAT_ID,
+							message_id: messageId2,
+							parse_mode: 'html',
+							text: message
+						})
+						.then(function(response){
+							let data = JSON.parse( response.request.response );
+							var result1 = [];
+							for(var k in data) {
+							  var v = data[k];
+							  result1.push(k, v);
+							}
+							var tmp = result1[3];
+							var result2 = [];
+							for(var k2 in tmp) {
+							  var v2 = tmp[k2];
+							  result2.push(k2, v2);
+							}
+							console.log("ИД сообщения: "+result2[1]);
+							document.getElementById('tg').action.value = "2";
+							document.getElementById('tg').textBox.value = "";
+							//document.getElementById('tg').messageId.value = result2[1];
+						}).catch((err) => {
+							console.warn(err);
+							document.getElementById('tg').action.value = "3";
+						})
+						.finally(() => {
+							console.log('Конец');
+							document.getElementById('tg').ChatId.value = CHAT_ID;
+						});
+
 					break;
 				}
 		})
