@@ -146,7 +146,7 @@
 							}
 							console.log("ИД сообщения: "+result2[1]);
 							document.getElementById('tg').action.value = "2";
-							document.getElementById('tg').messageId.value = result2[1];
+							document.getElementById('tg').messageID.value = result2[1];
 						}).catch((err) => {
 							console.warn(err);
 							document.getElementById('tg').action.value = "3";
@@ -187,7 +187,7 @@
 							console.log("ИД сообщения: "+result2[1]);
 							document.getElementById('tg').action.value = "2";
 							document.getElementById('tg').textBox.value = "";
-							//document.getElementById('tg').messageId.value = result2[1];
+							document.getElementById('tg').messageID.value = result2[1];
 						}).catch((err) => {
 							console.warn(err);
 							document.getElementById('tg').action.value = "3";
