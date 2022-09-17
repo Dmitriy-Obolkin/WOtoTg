@@ -198,6 +198,45 @@
 						});
 
 					break;
+						
+						
+					//Бесшумно отправить
+					case '5':
+						URI_APIR = URI_API + "sendMessage";
+
+						message = `${document.getElementById('tg').textBox.value}`;
+						axios.post(URI_APIR, {
+							chat_id: CHAT_ID,
+							parse_mode: 'html',
+							text: message,
+							disable_notification: true
+						})
+						.then(function(response){
+							let data = JSON.parse( response.request.response );
+							var result1 = [];
+							for(var k in data) {
+							  var v = data[k];
+							  result1.push(k, v);
+							}
+							var tmp = result1[3];
+							var result2 = [];
+							for(var k2 in tmp) {
+							  var v2 = tmp[k2];
+							  result2.push(k2, v2);
+							}
+							console.log("ИД сообщения: "+result2[1]);
+							document.getElementById('tg').action.value = "2";
+							document.getElementById('tg').messageID.value = result2[1];
+						}).catch((err) => {
+							console.warn(err);
+							document.getElementById('tg').action.value = "3";
+						})
+						.finally(() => {
+							console.log('Конец');
+							document.getElementById('tg').ChatId.value = CHAT_ID;
+						});
+					break;
+						
 				}
 		})
 		
